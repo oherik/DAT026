@@ -17,7 +17,6 @@ public class DummyModel implements IBouncingBallsModel {
 		this.areaHeight = height;
 		addBall(1,3,2.3,1,1,1);
 		addBall(3,5,2.3,1,1,2);
-		addBall(5,5,2.3,1,1,3);
 		setRelativeColor();
 	}
 
