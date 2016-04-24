@@ -72,7 +72,6 @@ public class DummyModel implements IBouncingBallsModel {
 			x += vx * deltaT;
 			y += vy * deltaT;
 
-			// Update values
 			b.setSpeed(vx,vy);
 			b.setPos(x,y);
 		}
@@ -100,9 +99,36 @@ public class DummyModel implements IBouncingBallsModel {
 	 * Fires when two balls collide
      */
 	private void collide(Ball ball1, Ball ball2){
+		double v1 = Math.hypot(ball1.getVx(), ball1.getVy());
+
 		System.out.println("Pang");
 	}
 
+	/**
+	 * Converts an x and y value to polar coordinates
+	 * @param x
+	 * @param y
+     * @return [length, angle]
+     */
+	private double[] rectToPolar(double x, double y){
+		double length = Math.hypot(x,y);
+		double angle = Math.atan(x/y);
+		double array[] = {length,angle};
+		return array;
+	}
+
+	/**
+	 * Converts polar coordinates to x and y values
+	 * @param angle
+	 * @param length
+     * @return [x,y]
+     */
+	private double[] polarToRect(double angle, double length){
+		double x = Math.sin(angle)*length;
+		double y = Math.cos(angle)*length;
+		double array[] = {x,y};
+		return array;
+	}
 
 	//rectToPolar and polarToRect
 
