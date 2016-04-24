@@ -8,12 +8,13 @@ public class DummyModel implements IBouncingBallsModel {
 	private final double areaHeight;
 
 	private double x, y, vx, vy, r;
+	private final double g = 9.81;
 
 	public DummyModel(double width, double height) {
 		this.areaWidth = width;
 		this.areaHeight = height;
 		x = 1;
-		y = 1;
+		y = 3;
 		vx = 2.3;
 		vy = 1;
 		r = 1;
@@ -21,6 +22,7 @@ public class DummyModel implements IBouncingBallsModel {
 
 	@Override
 	public void tick(double deltaT) {
+		applyGravity(deltaT);
 		if (x < r || x > areaWidth - r) {
 			vx *= -1;
 		}
@@ -29,6 +31,10 @@ public class DummyModel implements IBouncingBallsModel {
 		}
 		x += vx * deltaT;
 		y += vy * deltaT;
+	}
+
+	private void applyGravity(double deltaT){
+		vy = vy-g*deltaT;
 	}
 
 	@Override
