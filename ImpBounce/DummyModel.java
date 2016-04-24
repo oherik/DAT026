@@ -15,12 +15,12 @@ public class DummyModel implements IBouncingBallsModel {
 	public DummyModel(double width, double height) {
 		this.areaWidth = width;
 		this.areaHeight = height;
-		ballList.add(new Ball(1,3,2.3,1,1, Color.red));
-		ballList.add(new Ball(3,5,2.3,1,1, Color.YELLOW));
+		addBall(1,3,2.3,1,1,1, Color.red);
+		addBall(3,5,2.3,1,1,2, Color.blue);
 	}
 
-	public void addBall(double x,double y,double vx,double vy,double r, Color c){
-		ballList.add(new Ball(x,y,vx,vy,r, c));
+	public void addBall(double x,double y,double vx,double vy,double r,double m, Color c){
+		ballList.add(new Ball(x,y,vx,vy,r,m, c));
 	}
 
 	@Override

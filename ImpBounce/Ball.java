@@ -5,7 +5,7 @@ import java.awt.*;
  * Created by erik on 2016-04-24.
  */
 public class Ball {
-    private double x, y, vx, vy, r;
+    private double x, y, vx, vy, m, r;
     private Color color;
 
     /**
@@ -15,14 +15,16 @@ public class Ball {
      * @param vx0   The initial horizontal speed
      * @param vy0   The initial vertical speed
      * @param r The radius of the ball
+     * @param m The mass of the ball
      * @param color The color of the ball
      */
-    public Ball(double x, double y, double vx0, double vy0, double r, Color color){
+    public Ball(double x, double y, double vx0, double vy0, double r, double m, Color color){
         this.x=x;
         this.y=y;
         this.vx=vx0;
         this.vy=vy0;
         this.r=r;
+        this.m=m;
         this.color = color;
     }
     public void setPos(double x, double y){
@@ -48,9 +50,13 @@ public class Ball {
     public double getR() {
         return r;
     }
+    public double getM(){
+        return m;
+    }
     public Color getColor(){
         return color;
     }
+
 
 
 }
