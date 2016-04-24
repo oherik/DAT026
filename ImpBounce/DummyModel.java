@@ -117,7 +117,26 @@ public class DummyModel implements IBouncingBallsModel {
 		double[] colVect = rectToPolar(deltaX, deltaY);
 		double colAngle = colVect[1];
 
-		//Divide each balls vectors into one in the collision angle, and one in the "neutral" angle
+		//Calculate vector in collision  angle. OBS: Not sure if correct!
+		//Ball 1
+		double[] xCol1 = polarToRect(colAngle,Math.abs(vx1));
+		double[] yCol1 = polarToRect(90-colAngle, Math.abs(vy1));
+
+		// sum
+		double xColVec1 = xCol1[0];
+		double yColVec1 = yCol1[0];
+
+		double u1 = xColVec1 + yColVec1;
+
+		//Ball 2
+		double[] xCol2 = polarToRect(colAngle,Math.abs(vx2));
+		double[] yCol2 = polarToRect(90-colAngle, Math.abs(vy2));
+
+		// sum
+		double xColVec2 = xCol2[0];
+		double yColVec2 = yCol2[0];
+
+		double u2 = xColVec2 + yColVec2;
 
 
 
