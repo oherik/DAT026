@@ -31,7 +31,10 @@ public class DummyModel implements IBouncingBallsModel {
 			double vx = b.getVx();
 			double vy = b.getVy();
 
+			// Change vertical velocity based on gravity
 			vy = applyGravity(vy, deltaT);
+
+			//Handle edge collision
 			if (x < r || x > areaWidth - r) {
 				vx *= -1;
 			}
@@ -41,11 +44,18 @@ public class DummyModel implements IBouncingBallsModel {
 			x += vx * deltaT;
 			y += vy * deltaT;
 
+			// Update values
 			b.setSpeed(vx,vy);
 			b.setPos(x,y);
 		}
 	}
 
+	/**
+	 * Updates vertical velocity based on gravity, using Euler's method
+	 * @param vy	The initial vertical velocity
+	 * @param deltaT	The change in time
+     * @return	The updated vertical velocity
+     */
 	private double applyGravity(double vy, double deltaT){
 		return vy-g*deltaT;
 	}
@@ -54,7 +64,7 @@ public class DummyModel implements IBouncingBallsModel {
 	public List<Ellipse2D> getBalls() {
 		List<Ellipse2D> myBalls = new LinkedList<Ellipse2D>();
 		for(Ball b : ballList) {
-		myBalls.add(new Ellipse2D.Double(b.getX() - b.getR(), b.getY() - b.getR(), 2 * b.getR(), 2 * b.getR()));
+			myBalls.add(new Ellipse2D.Double(b.getX() - b.getR(), b.getY() - b.getR(), 2 * b.getR(), 2 * b.getR()));
 		}
 		return myBalls;
 	}
