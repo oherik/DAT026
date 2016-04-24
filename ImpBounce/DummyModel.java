@@ -29,15 +29,17 @@ public class DummyModel implements IBouncingBallsModel {
 			double x = b.getX();
 			double y = b.getY();
 			double r = b.getR();
-			double vx = b.getVx();
-			double vy = b.getVy();
 
 			// Change vertical velocity based on gravity
-			vy = applyGravity(vy, deltaT);
+			applyGravity(b, deltaT);
 
+			// Check ball collision
 			checkCollision();
 
 			//Handle edge collision
+			double vx = b.getVx();
+			double vy = b.getVy();
+
 			if (x < r || x > areaWidth - r) {
 				vx *= -1;
 			}
@@ -53,6 +55,9 @@ public class DummyModel implements IBouncingBallsModel {
 		}
 	}
 
+	/**
+	 * Checks the collision between all balls in the system
+	 */
 	private void checkCollision(){
 		Ball ball1, ball2;
 		double distance;
@@ -68,20 +73,23 @@ public class DummyModel implements IBouncingBallsModel {
 		}
 	}
 
+	/**
+	 * Fires when two balls collide
+     */
 	private void collide(Ball ball1, Ball ball2){
 		System.out.println("Pang");
 	}
 
 
+	//rectToPolar and polarToRect
 
 	/**
 	 * Updates vertical velocity based on gravity, using Euler's method
-	 * @param vy	The initial vertical velocity
+	 * @param b	The ball
 	 * @param deltaT	The change in time
-     * @return	The updated vertical velocity
      */
-	private double applyGravity(double vy, double deltaT){
-		return vy-g*deltaT;
+	private void applyGravity(Ball b, double deltaT){
+		b.setSpeed(b.getVx(),b.getVy()-g*deltaT);
 	}
 
 	@Override
