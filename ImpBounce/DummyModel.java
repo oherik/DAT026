@@ -138,6 +138,16 @@ public class DummyModel implements IBouncingBallsModel {
 
 		double u2 = xColVec2 + yColVec2;
 
+		//Calculation of collision
+		double I = m1*u1 + m2*u2;
+		double R =  u1 - u2;
+		double v1;
+		double v2;
+
+		v1 = I/((m2*R)*(m1-m2));
+		v2 = R + v1;
+
+		// 
 
 
 		System.out.println("Pang");
