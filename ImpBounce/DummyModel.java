@@ -15,8 +15,8 @@ public class DummyModel implements IBouncingBallsModel {
 	public DummyModel(double width, double height) {
 		this.areaWidth = width;
 		this.areaHeight = height;
-		addBall(1,3,2.3,1,1,1);
-		addBall(3,5,2.3,1,1,2);
+		addBall(1,1,2.0,1,1,1);
+		addBall(6,1,-2.0,1,1,1);
 		setRelativeColor();
 	}
 
@@ -99,21 +99,9 @@ public class DummyModel implements IBouncingBallsModel {
 	 * Fires when two balls collide
      */
 	private void collide(Ball ball1, Ball ball2){
-		double polar1[] =  rectToPolar(ball1.getX(),ball1.getY());
-		double polar2[] =  rectToPolar(ball2.getX(),ball2.getY());
-		double polarBoth[] =  rectToPolar(ball1.getX()-ball2.getX(),ball1.getY()-ball2.getY());
-		double collisionAngle = polarBoth[1];
-		double deltaAngle1 = polar1[1]-collisionAngle;
-		double deltaAngle2 = polar2[1]-collisionAngle;
-
-		double collisionV1 = polar1[0]/Math.sin(deltaAngle1);
-		double collisionV2 = polar2[0]/Math.sin(deltaAngle2);
-
-		double R = collisionV1-collisionV2;
-		double impulse =  ball1.getM()*collisionV1+ball2.getM()*collisionV2;
 
 		//TODO lös kollision här
-		
+
 		System.out.println("Pang");
 	}
 
