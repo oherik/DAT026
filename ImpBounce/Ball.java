@@ -1,9 +1,12 @@
+import java.awt.*;
+
 /**
  * A model class for a ball. It doesn't do anything per se, but keeps track of the different values.
  * Created by erik on 2016-04-24.
  */
 public class Ball {
     private double x, y, vx, vy, r;
+    private Color color;
 
     /**
      * Create a new ball
@@ -12,13 +15,15 @@ public class Ball {
      * @param vx0   The initial horizontal speed
      * @param vy0   The initial vertical speed
      * @param r The radius of the ball
+     * @param color The color of the ball
      */
-    public Ball(double x, double y, double vx0, double vy0, double r){
+    public Ball(double x, double y, double vx0, double vy0, double r, Color color){
         this.x=x;
         this.y=y;
         this.vx=vx0;
         this.vy=vy0;
         this.r=r;
+        this.color = color;
     }
     public void setPos(double x, double y){
         this.x = x;
@@ -42,6 +47,9 @@ public class Ball {
     }
     public double getR() {
         return r;
+    }
+    public Color getColor(){
+        return color;
     }
 
 

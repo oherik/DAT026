@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,12 +15,12 @@ public class DummyModel implements IBouncingBallsModel {
 	public DummyModel(double width, double height) {
 		this.areaWidth = width;
 		this.areaHeight = height;
-		ballList.add(new Ball(1,3,2.3,1,1));
-		ballList.add(new Ball(3,5,2.3,1,1));
+		ballList.add(new Ball(1,3,2.3,1,1, Color.red));
+		ballList.add(new Ball(3,5,2.3,1,1, Color.YELLOW));
 	}
 
-	public void addBall(double x,double y,double vx,double vy,double r){
-		ballList.add(new Ball(x,y,vx,vy,r));
+	public void addBall(double x,double y,double vx,double vy,double r, Color c){
+		ballList.add(new Ball(x,y,vx,vy,r, c));
 	}
 
 	@Override
@@ -61,10 +62,10 @@ public class DummyModel implements IBouncingBallsModel {
 	}
 
 	@Override
-	public List<Ellipse2D> getBalls() {
-		List<Ellipse2D> myBalls = new LinkedList<Ellipse2D>();
+	public List<ColoredEllipse> getBalls() {
+		List<ColoredEllipse> myBalls = new LinkedList<ColoredEllipse>();
 		for(Ball b : ballList) {
-			myBalls.add(new Ellipse2D.Double(b.getX() - b.getR(), b.getY() - b.getR(), 2 * b.getR(), 2 * b.getR()));
+			myBalls.add(new ColoredEllipse(new Ellipse2D.Double(b.getX() - b.getR(), b.getY() - b.getR(), 2 * b.getR(), 2 * b.getR()), b.getColor()));
 		}
 		return myBalls;
 	}

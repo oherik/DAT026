@@ -2,7 +2,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.util.List;
-
 /**
  * Extends Animator with capability to draw a bouncing balls model.
  * 
@@ -35,13 +34,13 @@ public final class BouncingBalls extends Animator {
 		g.fillRect(0, 0, canvasWidth, canvasHeight);
 		// Update the model
 		model.tick(deltaT);
-		List<Ellipse2D> balls = model.getBalls();
+		List<ColoredEllipse> balls = model.getBalls();
 		// Transform balls to fit canvas
-		g.setColor(Color.RED);
 		g.scale(PIXELS_PER_METER, -PIXELS_PER_METER);
 		g.translate(0, -modelHeight);
-		for (Ellipse2D b : balls) {
-			g.fill(b);
+		for (ColoredEllipse b : balls) {
+			g.setColor(b.c);
+			g.fill(b.e);
 		}
 	}
 
