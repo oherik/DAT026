@@ -100,8 +100,26 @@ public class DummyModel implements IBouncingBallsModel {
 	 * Fires when two balls collide
      */
 	private void collide(Ball ball1, Ball ball2){
+		double m1 = ball1.getM();
+		double m2 = ball2.getM();
+		double vx1 = ball1.getVx();
+		double vy1 = ball1.getVy();
+		double vx2 = ball2.getVx();
+		double vy2 = ball2.getVy();
+		double x1 = ball1.getX();
+		double y1 = ball1.getY();
+		double x2 = ball2.getX();
+		double y2 = ball2.getY();
 
-		//TODO lös kollision här
+		//Calculate the Collision Angle, according to x.
+		double deltaX = x1-x2;
+		double deltaY = y1-y2;
+		double[] colVect = rectToPolar(deltaX, deltaY);
+		double colAngle = colVect[1];
+
+		//Divide each balls vectors into one in the collision angle, and one in the "neutral" angle
+
+
 
 		System.out.println("Pang");
 	}
