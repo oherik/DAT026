@@ -26,6 +26,10 @@ public class Ball {
         this.r=r;
         this.m=m;
         this.color = color;
+
+    }
+    public Ball(double x, double y, double vx0, double vy0, double r, double m) {
+        this(x, y, vx0, vy0, r, m, Color.RED);
     }
     public void setPos(double x, double y){
         this.x = x;
@@ -52,6 +56,9 @@ public class Ball {
     }
     public double getM(){
         return m;
+    }
+    public void setColor(Color color){
+        this.color = color;
     }
     public Color getColor(){
         return color;
