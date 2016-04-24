@@ -20,6 +20,10 @@ public class DummyModel implements IBouncingBallsModel {
 		setRelativeColor();
 	}
 
+	/**
+	 * The default ball is here changed so that the color is a shade of red, depending on the mass of the ball.
+	 * This is to simplify visual debugging.
+	 */
 	private void setRelativeColor(){
 		double maxMass = 0;
 		for (Ball b : ballList){
@@ -30,11 +34,14 @@ public class DummyModel implements IBouncingBallsModel {
 		for(Ball b : ballList){
 			double tmp = b.getM()/maxMass;
 			float saturation = (float) tmp;
-			Color newColor = 	Color.getHSBColor(100, saturation, 1);
+			Color newColor = 	Color.getHSBColor(0, saturation, 1);
 			b.setColor(newColor);
 		}
 	}
 
+	/**
+	 * Adds a ball to the list of balls
+     */
 	public void addBall(double x,double y,double vx,double vy,double r,double m){
 		ballList.add(new Ball(x,y,vx,vy,r,m));
 	}
