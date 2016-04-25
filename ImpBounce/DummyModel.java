@@ -175,7 +175,7 @@ public class DummyModel implements IBouncingBallsModel {
      */
 	private double[] rectToPolar(double x, double y){
 		double length = Math.hypot(x,y);
-		double angle = Math.atan(x/y);
+		double angle = Math.atan(y/x);
 		double array[] = {length,angle};
 		return array;
 	}
@@ -187,8 +187,8 @@ public class DummyModel implements IBouncingBallsModel {
      * @return [x,y]
      */
 	private double[] polarToRect(double angle, double length){
-		double x = Math.sin(angle)*length;
-		double y = Math.cos(angle)*length;
+		double x = Math.cos(angle)*length;
+		double y = Math.sin(angle)*length;
 		double array[] = {x,y};
 		return array;
 	}
