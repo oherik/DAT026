@@ -146,7 +146,6 @@ public class DummyModel implements IBouncingBallsModel {
 		else
 			u2 = Math.hypot(collisionV2[0], collisionV2[1]);
 
-
 		// Solve[{ m1*v1 + m2*v2  = m1*u1 + m2*u2, -( u2 -u1 ) = v2 - v1 }, {v1,v2}]
 		double v1 =  (m1*u1-m2*u1+2*m2*u2)/(m1+m2);
 		double v2 = (2*m1*u1-m1*u2+m2*u2)/(m1+m2);
@@ -157,43 +156,16 @@ public class DummyModel implements IBouncingBallsModel {
 		double k1 = v1/vecLength;
 		double k2 = v2/vecLength;
 
+		newVy1 = collisionVector[1] *k1;
+		newVx1 = collisionVector[0] *k1;
 
-			newVy1 = collisionVector[1] *k1;
-			newVx1 = collisionVector[0] *k1;
-
-			newVy2 = collisionVector[1] *k2;
-			newVx2 = collisionVector[0] *k2;
+		newVy2 = collisionVector[1] *k2;
+		newVx2 = collisionVector[0] *k2;
 
 		ball1.setSpeed(newVx1 + neutralV1[0], newVy1+neutralV1[1]);
 		ball2.setSpeed(newVx2 + neutralV2[0], newVy2+neutralV2[1]);
-		System.out.println("Pang");
 	}
 
-	/**
-	 * Converts an x and y value to polar coordinates
-	 * @param x
-	 * @param y
-     * @return [length, angle]
-     */
-	private double[] rectToPolar(double x, double y){
-		double length = Math.hypot(x,y);
-		double angle = Math.atan(y/x);
-		double array[] = {length,angle};
-		return array;
-	}
-
-	/**
-	 * Converts polar coordinates to x and y values
-	 * @param angle
-	 * @param length
-     * @return [x,y]
-     */
-	private double[] polarToRect(double angle, double length){
-		double x = Math.cos(angle)*length;
-		double y = Math.sin(angle)*length;
-		double array[] = {x,y};
-		return array;
-	}
 
 	//rectToPolar and polarToRect
 

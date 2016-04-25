@@ -49,8 +49,8 @@
       <file leaf-file-name="DummyModel.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DummyModel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33962265">
-              <caret line="17" column="31" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
+            <state vertical-scroll-proportion="1.0">
+              <caret line="146" column="60" selection-start-line="146" selection-start-column="60" selection-end-line="146" selection-end-column="60" />
               <folding>
                 <element signature="e#1138#1139#0" expanded="true" />
                 <element signature="e#1182#1183#0" expanded="true" />
@@ -399,7 +399,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/DummyModel.java</url>
-          <line>167</line>
+          <line>165</line>
           <properties />
           <option name="timeStamp" value="11" />
         </line-breakpoint>
@@ -573,8 +573,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DummyModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33962265">
-          <caret line="17" column="31" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
+        <state vertical-scroll-proportion="1.0">
+          <caret line="146" column="60" selection-start-line="146" selection-start-column="60" selection-end-line="146" selection-end-column="60" />
           <folding>
             <element signature="e#1138#1139#0" expanded="true" />
             <element signature="e#1182#1183#0" expanded="true" />
