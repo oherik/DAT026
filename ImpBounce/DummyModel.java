@@ -15,8 +15,8 @@ public class DummyModel implements IBouncingBallsModel {
 	public DummyModel(double width, double height) {
 		this.areaWidth = width;
 		this.areaHeight = height;
-		addBall(1,9,2.0,1,1,1);
-		addBall(6,5,-2.0,1,1.3,2);
+		addBall(3,5,2.0,0,1,1);
+		addBall(9,5,-2.0,0,1.3,3);
 		setRelativeColor();
 	}
 
@@ -69,7 +69,7 @@ public class DummyModel implements IBouncingBallsModel {
 				b.setSpeed(vx,vy);
 			} else {
 				// Change vertical velocity based on gravity
-				applyGravity(b, deltaT);
+			//	applyGravity(b, deltaT);
 			}
 			x += b.getVx() * deltaT;
 			y += b.getVy() * deltaT;
@@ -98,6 +98,22 @@ public class DummyModel implements IBouncingBallsModel {
 		return false;
 	}
 
+	private double dotProduct(double x1, double y1, double x2, double y2){
+		return x1*x2+y1*y2;
+	}
+
+	private double[] project(double x1, double y1, double x2, double y2){
+		double k = dotProduct(x1,y1,x2,y2)/dotProduct(x2,y2,x2,y2);
+		double[] array = {k*x2,k*y2};
+		return array;
+	}
+
+	private double[] normalVector(double dx, double dy){
+		double array[] = {-dy,dx};
+		return array;
+	}
+
+
 	/**
 	 * Fires when two balls collide
      */
@@ -113,57 +129,42 @@ public class DummyModel implements IBouncingBallsModel {
 		double x2 = ball2.getX();
 		double y2 = ball2.getY();
 
-		//Calculate the Collision Angle, according to x.
-		double deltaX = x1-x2;
-		double deltaY = y1-y2;
-		double[] colVect = rectToPolar(deltaX, deltaY);
-		double colAngle = colVect[1];
+		double collisionVector[] = {x2-x1,y2-y1};
+		double neutralVector[] = normalVector(collisionVector[0], collisionVector[1]);
 
-		//Calculate vector in collision  angle. OBS: Not sure if correct!
-		//Ball 1
-		double[] xCol1 = polarToRect(colAngle,Math.abs(vx1));
-		double[] yCol1 = polarToRect(90-colAngle, Math.abs(vy1));
+		double collisionV1[] = project(vx1, vy1, collisionVector[0], collisionVector[1]);
+		double collisionV2[] = project(vx2, vy2, collisionVector[0], collisionVector[1]);
 
-		// sum
-		double xColVec1 = xCol1[0];
-		double yColVec1 = yCol1[0];
+		double neutralV1[] = project(vx1, vy1, neutralVector[0], neutralVector[1]);
+		double neutralV2[] = project(vx2, vy2, neutralVector[0], neutralVector[1]);
 
-		double u1 = xColVec1 + yColVec1;
-
-		//Ball 2
-		double[] xCol2 = polarToRect(colAngle,Math.abs(vx2));
-		double[] yCol2 = polarToRect(90-colAngle, Math.abs(vy2));
-
-		// sum
-		double xColVec2 = xCol2[0];
-		double yColVec2 = yCol2[0];
-
-		double u2 = xColVec2 + yColVec2;
-
-		//Calculation of collision
-		double I = m1*u1 + m2*u2;
-		double R =  u1 - u2;
-		double v1;
-		double v2;
-
-		v1 = I/((m2*R)*(m1-m2));
-		v2 = R + v1;
-
-		// Two-dimensionals after Collision
-		//Ball 1
-		double[] afterCol1 = polarToRect(colAngle,v1);
-		double[] neutralCol1 = polarToRect(90+colAngle, xCol1[1] + yCol1[1]);
-		vx1 = afterCol1[0] + neutralCol1[0];
-		vy1 = afterCol1[1] + neutralCol1[1];
-		//Ball 2
-		double[] afterCol2 = polarToRect(colAngle,v2);
-		double[] neutralCol2 = polarToRect(90+colAngle, xCol2[1] + yCol2[1]);
-		vx2 = afterCol2[0] + neutralCol2[0];
-		vy2 = afterCol2[1] + neutralCol2[1];
+		double u2;
+		double u1 = Math.hypot(collisionV1[0], collisionV1[1]);
+		if(collisionV1[0]*collisionV2[0]<0 || collisionV1[1]*collisionV2[1]<0)
+			 u2 = -Math.hypot(collisionV2[0], collisionV2[1]);
+		else
+			u2 = Math.hypot(collisionV2[0], collisionV2[1]);
 
 
-		//ball1.setSpeed(vx1, vy2);
-		//ball2.setSpeed(vx2, vy2);
+		// Solve[{ m1*v1 + m2*v2  = m1*u1 + m2*u2, -( u2 -u1 ) = v2 - v1 }, {v1,v2}]
+		double v1 =  (m1*u1-m2*u1+2*m2*u2)/(m1+m2);
+		double v2 = (2*m1*u1-m1*u2+m2*u2)/(m1+m2);
+		double newVx1, newVy1, newVx2, newVy2;
+
+		double vecLength = Math.hypot(collisionVector[0],collisionVector[1]);
+
+		double k1 = v1/vecLength;
+		double k2 = v2/vecLength;
+
+
+			newVy1 = collisionVector[1] *k1;
+			newVx1 = collisionVector[0] *k1;
+
+			newVy2 = collisionVector[1] *k2;
+			newVx2 = collisionVector[0] *k2;
+
+		ball1.setSpeed(newVx1 + neutralV1[0], newVy1+neutralV1[1]);
+		ball2.setSpeed(newVx2 + neutralV2[0], newVy2+neutralV2[1]);
 		System.out.println("Pang");
 	}
 
