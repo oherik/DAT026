@@ -15,8 +15,8 @@ public class DummyModel implements IBouncingBallsModel {
 	public DummyModel(double width, double height) {
 		this.areaWidth = width;
 		this.areaHeight = height;
-		addBall(1,1,2.0,1,1,1);
-		addBall(6,1,-2.0,1,1,1);
+		addBall(1,9,2.0,1,1,1);
+		addBall(6,5,-2.0,1,1.3,2);
 		setRelativeColor();
 	}
 
@@ -53,9 +53,6 @@ public class DummyModel implements IBouncingBallsModel {
 			double y = b.getY();
 			double r = b.getR();
 
-			// Change vertical velocity based on gravity
-			applyGravity(b, deltaT);
-
 			// Check ball collision
 			checkCollision();
 
@@ -65,14 +62,18 @@ public class DummyModel implements IBouncingBallsModel {
 
 			if (x < r || x > areaWidth - r) {
 				vx *= -1;
+				b.setSpeed(vx,vy);
 			}
 			if (y < r || y > areaHeight - r) {
 				vy *= -1;
+				b.setSpeed(vx,vy);
+			} else {
+				// Change vertical velocity based on gravity
+				applyGravity(b, deltaT);
 			}
-			x += vx * deltaT;
-			y += vy * deltaT;
+			x += b.getVx() * deltaT;
+			y += b.getVy() * deltaT;
 
-			b.setSpeed(vx,vy);
 			b.setPos(x,y);
 		}
 	}
@@ -80,7 +81,7 @@ public class DummyModel implements IBouncingBallsModel {
 	/**
 	 * Checks the collision between all balls in the system
 	 */
-	private void checkCollision(){
+	private boolean checkCollision(){
 		Ball ball1, ball2;
 		double distance;
 		for(int i = 0; i<ballList.size(); i++){
@@ -90,18 +91,79 @@ public class DummyModel implements IBouncingBallsModel {
 				distance = Math.hypot(Math.abs(ball1.getX()-ball2.getX()),Math.abs(ball1.getY()-ball2.getY()));
 				if(distance<=ball1.getR()+ball2.getR()){
 					collide(ball1,ball2);
+					return true;
 				}
 			}
 		}
+		return false;
 	}
 
 	/**
 	 * Fires when two balls collide
      */
 	private void collide(Ball ball1, Ball ball2){
+		double m1 = ball1.getM();
+		double m2 = ball2.getM();
+		double vx1 = ball1.getVx();
+		double vy1 = ball1.getVy();
+		double vx2 = ball2.getVx();
+		double vy2 = ball2.getVy();
+		double x1 = ball1.getX();
+		double y1 = ball1.getY();
+		double x2 = ball2.getX();
+		double y2 = ball2.getY();
 
-		//TODO lös kollision här
+		//Calculate the Collision Angle, according to x.
+		double deltaX = x1-x2;
+		double deltaY = y1-y2;
+		double[] colVect = rectToPolar(deltaX, deltaY);
+		double colAngle = colVect[1];
 
+		//Calculate vector in collision  angle. OBS: Not sure if correct!
+		//Ball 1
+		double[] xCol1 = polarToRect(colAngle,Math.abs(vx1));
+		double[] yCol1 = polarToRect(90-colAngle, Math.abs(vy1));
+
+		// sum
+		double xColVec1 = xCol1[0];
+		double yColVec1 = yCol1[0];
+
+		double u1 = xColVec1 + yColVec1;
+
+		//Ball 2
+		double[] xCol2 = polarToRect(colAngle,Math.abs(vx2));
+		double[] yCol2 = polarToRect(90-colAngle, Math.abs(vy2));
+
+		// sum
+		double xColVec2 = xCol2[0];
+		double yColVec2 = yCol2[0];
+
+		double u2 = xColVec2 + yColVec2;
+
+		//Calculation of collision
+		double I = m1*u1 + m2*u2;
+		double R =  u1 - u2;
+		double v1;
+		double v2;
+
+		v1 = I/((m2*R)*(m1-m2));
+		v2 = R + v1;
+
+		// Two-dimensionals after Collision
+		//Ball 1
+		double[] afterCol1 = polarToRect(colAngle,v1);
+		double[] neutralCol1 = polarToRect(90+colAngle, xCol1[1] + yCol1[1]);
+		vx1 = afterCol1[0] + neutralCol1[0];
+		vy1 = afterCol1[1] + neutralCol1[1];
+		//Ball 2
+		double[] afterCol2 = polarToRect(colAngle,v2);
+		double[] neutralCol2 = polarToRect(90+colAngle, xCol2[1] + yCol2[1]);
+		vx2 = afterCol2[0] + neutralCol2[0];
+		vy2 = afterCol2[1] + neutralCol2[1];
+
+
+		//ball1.setSpeed(vx1, vy2);
+		//ball2.setSpeed(vx2, vy2);
 		System.out.println("Pang");
 	}
 
@@ -113,7 +175,7 @@ public class DummyModel implements IBouncingBallsModel {
      */
 	private double[] rectToPolar(double x, double y){
 		double length = Math.hypot(x,y);
-		double angle = Math.atan(x/y);
+		double angle = Math.atan(y/x);
 		double array[] = {length,angle};
 		return array;
 	}
@@ -125,8 +187,8 @@ public class DummyModel implements IBouncingBallsModel {
      * @return [x,y]
      */
 	private double[] polarToRect(double angle, double length){
-		double x = Math.sin(angle)*length;
-		double y = Math.cos(angle)*length;
+		double x = Math.cos(angle)*length;
+		double y = Math.sin(angle)*length;
 		double array[] = {x,y};
 		return array;
 	}
