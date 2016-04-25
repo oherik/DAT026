@@ -15,7 +15,8 @@ public class DummyModel implements IBouncingBallsModel {
 	public DummyModel(double width, double height) {
 		this.areaWidth = width;
 		this.areaHeight = height;
-		addBall(3,5,2.0,0,1,1);
+		addBall(3,5,2.2,2,1,1);
+		addBall(7,3,2.2,-2,1,2);
 		addBall(9,5,-2.0,0,1.3,3);
 		setRelativeColor();
 	}
@@ -69,7 +70,7 @@ public class DummyModel implements IBouncingBallsModel {
 				b.setSpeed(vx,vy);
 			} else {
 				// Change vertical velocity based on gravity
-			//	applyGravity(b, deltaT);
+				applyGravity(b, deltaT);
 			}
 			x += b.getVx() * deltaT;
 			y += b.getVy() * deltaT;
