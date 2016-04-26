@@ -8,7 +8,7 @@ public class DummyModel implements IBouncingBallsModel {
 	private final double areaWidth;
 	private final double areaHeight;
 
-	private final double g = 9.81;
+	private final double g = 9.82;
 
 	private List<Ball> ballList = new LinkedList<>();
 
@@ -50,7 +50,8 @@ public class DummyModel implements IBouncingBallsModel {
 	@Override
 	public void tick(double deltaT) {
 		// Check ball collision
-		checkCollision(deltaT);
+		checkCollision();
+
 		for(Ball b : ballList) {
 			double x = b.getX();
 			double y = b.getY();
@@ -66,11 +67,13 @@ public class DummyModel implements IBouncingBallsModel {
 			}
 			if ((y < r) && (vy<0) || (y > areaHeight - r) && (vy>0)) {
 				vy *= -1;
-				b.setSpeed(vx,vy);
-			} else {
-				// Change vertical velocity based on gravity
-				applyGravity(b, deltaT);
+				b.setSpeed(vx, vy);
 			}
+
+			// Change vertical velocity based on gravity
+			applyGravity(b, deltaT);
+
+			// Update position
 			x += b.getVx() * deltaT;
 			y += b.getVy() * deltaT;
 
@@ -81,7 +84,7 @@ public class DummyModel implements IBouncingBallsModel {
 	/**
 	 * Checks the collision between all balls in the system
 	 */
-	private void checkCollision(double deltaT){
+	private void checkCollision(){
 		Ball ball1, ball2;
 		double distance;
 		for(int i = 0; i<ballList.size()-1; i++){
@@ -89,18 +92,11 @@ public class DummyModel implements IBouncingBallsModel {
 			for(int j = i+1; j<ballList.size(); j++) {
 				ball2 = ballList.get(j);
 				distance = Math.hypot(Math.abs(ball1.getX()-ball2.getX()),Math.abs(ball1.getY()-ball2.getY()));
-				double distanceNextTick = ball1.getR()+ball2.getR()+
-						(Math.hypot(ball1.getVx(),ball1.getVy())+Math.hypot(ball2.getVx(),ball2.getVy()))*deltaT;
-
-
 				if(distance<=ball1.getR()+ball2.getR()){
-				//if(distance<=distanceNextTick){
 						collide(ball1,ball2);
-					//return true;
 				}
 			}
 		}
-		//return false;
 	}
 
 	private double dotProduct(double x1, double y1, double x2, double y2){
@@ -117,7 +113,6 @@ public class DummyModel implements IBouncingBallsModel {
 		double array[] = {-dy,dx};
 		return array;
 	}
-
 
 	/**
 	 * Fires when two balls collide
@@ -141,41 +136,38 @@ public class DummyModel implements IBouncingBallsModel {
 		double collisionV2[] = project(vx2, vy2, collisionVector[0], collisionVector[1]);
 
 
-	if(!((collisionV1[0]*collisionVector[0]<0 || collisionV1[1]*collisionVector[1]<0) && (collisionV1[0]*collisionV2[0]<0  ||
-			collisionV1[1]*collisionV2[1]<0))) {
-		double neutralV1[] = project(vx1, vy1, neutralVector[0], neutralVector[1]);
-		double neutralV2[] = project(vx2, vy2, neutralVector[0], neutralVector[1]);
+		if(!((collisionV1[0]*collisionVector[0]<0 || collisionV1[1]*collisionVector[1]<0)
+			&& (collisionV1[0]*collisionV2[0]<0  ||	collisionV1[1]*collisionV2[1]<0))) {
+			double neutralV1[] = project(vx1, vy1, neutralVector[0], neutralVector[1]);
+			double neutralV2[] = project(vx2, vy2, neutralVector[0], neutralVector[1]);
 
-		double u2;
-		double u1 = Math.hypot(collisionV1[0], collisionV1[1]);
-		if (collisionVector[0] * collisionV2[0] < 0 | collisionVector[1] *collisionV2[1]<0)
-			u2 = -Math.hypot(collisionV2[0], collisionV2[1]);
-		else
-			u2 = Math.hypot(collisionV2[0], collisionV2[1]);
+			double u2;
+			double u1 = Math.hypot(collisionV1[0], collisionV1[1]);
+			if (collisionVector[0] * collisionV2[0] < 0 | collisionVector[1] *collisionV2[1]<0)
+				u2 = -Math.hypot(collisionV2[0], collisionV2[1]);
+			else
+				u2 = Math.hypot(collisionV2[0], collisionV2[1]);
 
-		// Solve[{ m1*v1 + m2*v2  = m1*u1 + m2*u2, -( u2 -u1 ) = v2 - v1 }, {v1,v2}]
-		double v1 = (m1 * u1 - m2 * u1 + 2 * m2 * u2) / (m1 + m2);
-		double v2 = (2 * m1 * u1 - m1 * u2 + m2 * u2) / (m1 + m2);
-		double newVx1, newVy1, newVx2, newVy2;
+			// Solve[{ m1*v1 + m2*v2  = m1*u1 + m2*u2, -( u2 -u1 ) = v2 - v1 }, {v1,v2}]
+			double v1 = (m1 * u1 - m2 * u1 + 2 * m2 * u2) / (m1 + m2);
+			double v2 = (2 * m1 * u1 - m1 * u2 + m2 * u2) / (m1 + m2);
+			double newVx1, newVy1, newVx2, newVy2;
 
-		double vecLength = Math.hypot(collisionVector[0], collisionVector[1]);
+			double vecLength = Math.hypot(collisionVector[0], collisionVector[1]);
 
-		double k1 = v1 / vecLength;
-		double k2 = v2 / vecLength;
+			double k1 = v1 / vecLength;
+			double k2 = v2 / vecLength;
 
-		newVy1 = collisionVector[1] * k1;
-		newVx1 = collisionVector[0] * k1;
+			newVy1 = collisionVector[1] * k1;
+			newVx1 = collisionVector[0] * k1;
 
-		newVy2 = collisionVector[1] * k2;
-		newVx2 = collisionVector[0] * k2;
+			newVy2 = collisionVector[1] * k2;
+			newVx2 = collisionVector[0] * k2;
 
-		ball1.setSpeed(newVx1 + neutralV1[0], newVy1 + neutralV1[1]);
-		ball2.setSpeed(newVx2 + neutralV2[0], newVy2 + neutralV2[1]);
+			ball1.setSpeed(newVx1 + neutralV1[0], newVy1 + neutralV1[1]);
+			ball2.setSpeed(newVx2 + neutralV2[0], newVy2 + neutralV2[1]);
+		}
 	}
-	}
-
-
-	//rectToPolar and polarToRect
 
 	/**
 	 * Updates vertical velocity based on gravity, using Euler's method
