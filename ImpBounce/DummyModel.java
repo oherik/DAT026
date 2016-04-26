@@ -69,10 +69,11 @@ public class DummyModel implements IBouncingBallsModel {
 				vy *= -1;
 				b.setSpeed(vx, vy);
 			}
-
-			// Change vertical velocity based on gravity
-			applyGravity(b, deltaT);
-
+			else {
+				// Change vertical velocity based on gravity
+				applyGravity(b, deltaT);
+			}
+			
 			// Update position
 			x += b.getVx() * deltaT;
 			y += b.getVy() * deltaT;
