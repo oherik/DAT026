@@ -8,15 +8,16 @@ public class DummyModel implements IBouncingBallsModel {
 	private final double areaWidth;
 	private final double areaHeight;
 
-	private final double g = 9.81;
+	private final double g = 9.82;
 
 	private List<Ball> ballList = new LinkedList<>();
 
 	public DummyModel(double width, double height) {
 		this.areaWidth = width;
 		this.areaHeight = height;
-		addBall(1,9,2.0,1,1,1);
-		addBall(6,5,-2.0,1,1.3,2);
+		addBall(1,5,3 ,2,1,2);
+		addBall(9,9,-2,1,0.7,1);
+		addBall(9,5,-2.0,0,1.3,3);
 		setRelativeColor();
 	}
 
@@ -43,34 +44,37 @@ public class DummyModel implements IBouncingBallsModel {
 	 * Adds a ball to the list of balls
      */
 	public void addBall(double x,double y,double vx,double vy,double r,double m){
-		ballList.add(new Ball(x,y,vx,vy,r,m));
+		ballList.add(new Ball(x, y, vx, vy, r, m));
 	}
 
 	@Override
 	public void tick(double deltaT) {
+		// Check ball collision
+		checkCollision();
+
 		for(Ball b : ballList) {
 			double x = b.getX();
 			double y = b.getY();
 			double r = b.getR();
 
-			// Check ball collision
-			checkCollision();
-
 			//Handle edge collision
 			double vx = b.getVx();
 			double vy = b.getVy();
 
-			if (x < r || x > areaWidth - r) {
+			if ((x < r) && (vx<0) || (x > areaWidth - r) && (vx>0)) {
 				vx *= -1;
 				b.setSpeed(vx,vy);
 			}
-			if (y < r || y > areaHeight - r) {
+			if ((y < r) && (vy<0) || (y > areaHeight - r) && (vy>0)) {
 				vy *= -1;
-				b.setSpeed(vx,vy);
-			} else {
+				b.setSpeed(vx, vy);
+			}
+			else {
 				// Change vertical velocity based on gravity
 				applyGravity(b, deltaT);
 			}
+			
+			// Update position
 			x += b.getVx() * deltaT;
 			y += b.getVy() * deltaT;
 
@@ -81,21 +85,34 @@ public class DummyModel implements IBouncingBallsModel {
 	/**
 	 * Checks the collision between all balls in the system
 	 */
-	private boolean checkCollision(){
+	private void checkCollision(){
 		Ball ball1, ball2;
 		double distance;
-		for(int i = 0; i<ballList.size(); i++){
+		for(int i = 0; i<ballList.size()-1; i++){
 			ball1 = ballList.get(i);
 			for(int j = i+1; j<ballList.size(); j++) {
 				ball2 = ballList.get(j);
 				distance = Math.hypot(Math.abs(ball1.getX()-ball2.getX()),Math.abs(ball1.getY()-ball2.getY()));
 				if(distance<=ball1.getR()+ball2.getR()){
-					collide(ball1,ball2);
-					return true;
+						collide(ball1,ball2);
 				}
 			}
 		}
-		return false;
+	}
+
+	private double dotProduct(double x1, double y1, double x2, double y2){
+		return x1*x2+y1*y2;
+	}
+
+	private double[] project(double x1, double y1, double x2, double y2){
+		double k = dotProduct(x1,y1,x2,y2)/dotProduct(x2,y2,x2,y2);
+		double[] array = {k*x2,k*y2};
+		return array;
+	}
+
+	private double[] normalVector(double dx, double dy){
+		double array[] = {-dy,dx};
+		return array;
 	}
 
 	/**
@@ -113,87 +130,44 @@ public class DummyModel implements IBouncingBallsModel {
 		double x2 = ball2.getX();
 		double y2 = ball2.getY();
 
-		//Calculate the Collision Angle, according to x.
-		double deltaX = x1-x2;
-		double deltaY = y1-y2;
-		double[] colVect = rectToPolar(deltaX, deltaY);
-		double colAngle = colVect[1];
+		double collisionVector[] = {x2-x1,y2- y1};
+		double neutralVector[] = normalVector(collisionVector[0], collisionVector[1]);
 
-		//Calculate vector in collision  angle. OBS: Not sure if correct!
-		//Ball 1
-		double[] xCol1 = polarToRect(colAngle,Math.abs(vx1));
-		double[] yCol1 = polarToRect(90-colAngle, Math.abs(vy1));
-
-		// sum
-		double xColVec1 = xCol1[0];
-		double yColVec1 = yCol1[0];
-
-		double u1 = xColVec1 + yColVec1;
-
-		//Ball 2
-		double[] xCol2 = polarToRect(colAngle,Math.abs(vx2));
-		double[] yCol2 = polarToRect(90-colAngle, Math.abs(vy2));
-
-		// sum
-		double xColVec2 = xCol2[0];
-		double yColVec2 = yCol2[0];
-
-		double u2 = xColVec2 + yColVec2;
-
-		//Calculation of collision
-		double I = m1*u1 + m2*u2;
-		double R =  u1 - u2;
-		double v1;
-		double v2;
-
-		v1 = I/((m2*R)*(m1-m2));
-		v2 = R + v1;
-
-		// Two-dimensionals after Collision
-		//Ball 1
-		double[] afterCol1 = polarToRect(colAngle,v1);
-		double[] neutralCol1 = polarToRect(90+colAngle, xCol1[1] + yCol1[1]);
-		vx1 = afterCol1[0] + neutralCol1[0];
-		vy1 = afterCol1[1] + neutralCol1[1];
-		//Ball 2
-		double[] afterCol2 = polarToRect(colAngle,v2);
-		double[] neutralCol2 = polarToRect(90+colAngle, xCol2[1] + yCol2[1]);
-		vx2 = afterCol2[0] + neutralCol2[0];
-		vy2 = afterCol2[1] + neutralCol2[1];
+		double collisionV1[] = project(vx1, vy1, collisionVector[0], collisionVector[1]);
+		double collisionV2[] = project(vx2, vy2, collisionVector[0], collisionVector[1]);
 
 
-		//ball1.setSpeed(vx1, vy2);
-		//ball2.setSpeed(vx2, vy2);
-		System.out.println("Pang");
+		if(!((collisionV1[0]*collisionVector[0]<0 || collisionV1[1]*collisionVector[1]<0)
+			&& (collisionV1[0]*collisionV2[0]<0  ||	collisionV1[1]*collisionV2[1]<0))) {
+			double neutralV1[] = project(vx1, vy1, neutralVector[0], neutralVector[1]);
+			double neutralV2[] = project(vx2, vy2, neutralVector[0], neutralVector[1]);
+
+			double u2;
+			double u1 = Math.hypot(collisionV1[0], collisionV1[1]);
+			if (collisionVector[0] * collisionV2[0] < 0 | collisionVector[1] *collisionV2[1]<0)
+				u2 = -Math.hypot(collisionV2[0], collisionV2[1]);
+			else
+				u2 = Math.hypot(collisionV2[0], collisionV2[1]);
+
+			double v1 = (m1 * u1 - m2 * u1 + 2 * m2 * u2) / (m1 + m2);
+			double v2 = (2 * m1 * u1 - m1 * u2 + m2 * u2) / (m1 + m2);
+			double newVx1, newVy1, newVx2, newVy2;
+
+			double vecLength = Math.hypot(collisionVector[0], collisionVector[1]);
+
+			double k1 = v1 / vecLength;
+			double k2 = v2 / vecLength;
+
+			newVy1 = collisionVector[1] * k1;
+			newVx1 = collisionVector[0] * k1;
+
+			newVy2 = collisionVector[1] * k2;
+			newVx2 = collisionVector[0] * k2;
+
+			ball1.setSpeed(newVx1 + neutralV1[0], newVy1 + neutralV1[1]);
+			ball2.setSpeed(newVx2 + neutralV2[0], newVy2 + neutralV2[1]);
+		}
 	}
-
-	/**
-	 * Converts an x and y value to polar coordinates
-	 * @param x
-	 * @param y
-     * @return [length, angle]
-     */
-	private double[] rectToPolar(double x, double y){
-		double length = Math.hypot(x,y);
-		double angle = Math.atan(y/x);
-		double array[] = {length,angle};
-		return array;
-	}
-
-	/**
-	 * Converts polar coordinates to x and y values
-	 * @param angle
-	 * @param length
-     * @return [x,y]
-     */
-	private double[] polarToRect(double angle, double length){
-		double x = Math.cos(angle)*length;
-		double y = Math.sin(angle)*length;
-		double array[] = {x,y};
-		return array;
-	}
-
-	//rectToPolar and polarToRect
 
 	/**
 	 * Updates vertical velocity based on gravity, using Euler's method
