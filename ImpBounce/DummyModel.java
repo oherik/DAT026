@@ -93,8 +93,8 @@ public class DummyModel implements IBouncingBallsModel {
 						(Math.hypot(ball1.getVx(),ball1.getVy())+Math.hypot(ball2.getVx(),ball2.getVy()))*deltaT;
 
 
-				//if(distance<=ball1.getR()+ball2.getR()){
-				if(distance<=distanceNextTick){
+				if(distance<=ball1.getR()+ball2.getR()){
+				//if(distance<=distanceNextTick){
 						collide(ball1,ball2);
 					return true;
 				}
