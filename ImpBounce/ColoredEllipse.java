@@ -2,7 +2,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 /**
- * Created by erik on 2016-04-24.
+ * Contains an ellipse and a color
  */
 public class ColoredEllipse {
     protected Ellipse2D.Double e;

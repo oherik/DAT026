@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.Ellipse2D;
 import java.util.List;
 /**
  * Extends Animator with capability to draw a bouncing balls model.

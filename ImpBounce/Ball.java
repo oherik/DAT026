@@ -2,7 +2,6 @@ import java.awt.*;
 
 /**
  * A model class for a ball. It doesn't do anything per se, but keeps track of the different values.
- * Created by erik on 2016-04-24.
  */
 public class Ball {
     private double x, y, vx, vy, m, r;
