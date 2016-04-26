@@ -15,9 +15,9 @@ public class DummyModel implements IBouncingBallsModel {
 	public DummyModel(double width, double height) {
 		this.areaWidth = width;
 		this.areaHeight = height;
-		addBall(3,5,2.2,2,1,1);
-		addBall(7,3,2.2,-2,1,2);
-		addBall(9,5,-2.0,0,1.3,3);
+		addBall(3,5,5 ,2,1,1);
+		addBall(7,3,1,-2,1,2);
+		//addBall(9,5,-2.0,0,1.3,3);
 		setRelativeColor();
 	}
 
@@ -141,7 +141,8 @@ public class DummyModel implements IBouncingBallsModel {
 
 		double u2;
 		double u1 = Math.hypot(collisionV1[0], collisionV1[1]);
-		if(collisionV1[0]*collisionV2[0]<0 || collisionV1[1]*collisionV2[1]<0)
+		if(collisionV1[0]*collisionV2[0]<0) 	// Check if the collision speeds are in different directions. Since
+												// they're on the same axes, only one value needs to be checked.
 			 u2 = -Math.hypot(collisionV2[0], collisionV2[1]);
 		else
 			u2 = Math.hypot(collisionV2[0], collisionV2[1]);
