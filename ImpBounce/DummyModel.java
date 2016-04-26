@@ -17,7 +17,7 @@ public class DummyModel implements IBouncingBallsModel {
 		this.areaHeight = height;
 		addBall(1,5,3 ,2,1,2);
 		addBall(9,4,-2,1,1,1);
-		//addBall(9,5,-2.0,0,1.3,3);
+		addBall(9,5,-2.0,0,1.3,3);
 		setRelativeColor();
 	}
 
@@ -44,7 +44,7 @@ public class DummyModel implements IBouncingBallsModel {
 	 * Adds a ball to the list of balls
      */
 	public void addBall(double x,double y,double vx,double vy,double r,double m){
-		ballList.add(new Ball(x,y,vx,vy,r,m));
+		ballList.add(new Ball(x, y, vx, vy, r, m));
 	}
 
 	@Override
@@ -60,11 +60,11 @@ public class DummyModel implements IBouncingBallsModel {
 			double vx = b.getVx();
 			double vy = b.getVy();
 
-			if (x < r || x > areaWidth - r) {
+			if ((x < r) && (vx<0) || (x > areaWidth - r) && (vx>0)) {
 				vx *= -1;
 				b.setSpeed(vx,vy);
 			}
-			if (y < r || y > areaHeight - r) {
+			if ((y < r) && (vy<0) || (y > areaHeight - r) && (vy>0)) {
 				vy *= -1;
 				b.setSpeed(vx,vy);
 			} else {
@@ -81,7 +81,7 @@ public class DummyModel implements IBouncingBallsModel {
 	/**
 	 * Checks the collision between all balls in the system
 	 */
-	private boolean checkCollision(double deltaT){
+	private void checkCollision(double deltaT){
 		Ball ball1, ball2;
 		double distance;
 		for(int i = 0; i<ballList.size()-1; i++){
@@ -96,11 +96,11 @@ public class DummyModel implements IBouncingBallsModel {
 				if(distance<=ball1.getR()+ball2.getR()){
 				//if(distance<=distanceNextTick){
 						collide(ball1,ball2);
-					return true;
+					//return true;
 				}
 			}
 		}
-		return false;
+		//return false;
 	}
 
 	private double dotProduct(double x1, double y1, double x2, double y2){
