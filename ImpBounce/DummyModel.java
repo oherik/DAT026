@@ -16,7 +16,7 @@ public class DummyModel implements IBouncingBallsModel {
 		this.areaWidth = width;
 		this.areaHeight = height;
 		addBall(1,5,3 ,2,1,2);
-		addBall(9,4,-2,1,1,1);
+		addBall(9,9,-2,1,0.7,1);
 		addBall(9,5,-2.0,0,1.3,3);
 		setRelativeColor();
 	}
@@ -148,7 +148,6 @@ public class DummyModel implements IBouncingBallsModel {
 			else
 				u2 = Math.hypot(collisionV2[0], collisionV2[1]);
 
-			// Solve[{ m1*v1 + m2*v2  = m1*u1 + m2*u2, -( u2 -u1 ) = v2 - v1 }, {v1,v2}]
 			double v1 = (m1 * u1 - m2 * u1 + 2 * m2 * u2) / (m1 + m2);
 			double v2 = (2 * m1 * u1 - m1 * u2 + m2 * u2) / (m1 + m2);
 			double newVx1, newVy1, newVx2, newVy2;
